@@ -5,6 +5,7 @@
  */
 package sudokusolver;
 
+import Controller.FileInput;
 import Viewer.Janela;
 
 /**
@@ -45,7 +46,15 @@ public class SudokuSolver {
             @Override
             public void run() {
                 Janela view = new Janela();
+                FileInput controller = new FileInput();
                 view.setVisible(true);
+                try {
+                    view.updateTable(controller.readInput());
+                }
+                catch (Exception e) {
+                
+                }
+                /*
                 view.updateTable(new int[][]{
                     {1,1,1,1,1,1,1,1,1},
                     {1,1,1,1,1,1,1,1,1},
@@ -57,6 +66,7 @@ public class SudokuSolver {
                     {1,1,1,1,1,1,1,1,1},
                     {1,1,1,1,1,1,1,1,1}
                 });
+                */
             }
         });
     }

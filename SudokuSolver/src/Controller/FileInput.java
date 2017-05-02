@@ -1,4 +1,4 @@
-package sudokusolver;
+package Controller;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -7,17 +7,13 @@ import java.io.FileReader;
  *
  * @author Nali
  */
-public class input {
-
-    public static void main(String[] args) throws Exception {
-        readInput();
-    }
+public class FileInput {
 	
-    private static int[][] readInput() throws Exception {
+    public int[][] readInput() throws Exception {
         
         int[][] input = new int[9][9];
         
-        FileReader File = new FileReader("/home/az/Desktop/SudokuIA-Nali/SudokuInput.txt");
+        FileReader File = new FileReader("SudokuInput.txt");
         BufferedReader Reader = new BufferedReader(File);
 
         String Line = Reader.readLine();
