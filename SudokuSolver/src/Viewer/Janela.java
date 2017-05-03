@@ -5,6 +5,7 @@
  */
 package Viewer;
 
+import Controller.Controller;
 import java.awt.Color;
 import java.awt.Component;
 import javax.swing.JTable;
@@ -15,34 +16,62 @@ import javax.swing.JTable;
  */
 public class Janela extends javax.swing.JFrame {
 
-    private float lineWidth = 2f;
-    private float squareSize;
     private int state[][];
+    private Controller controller;
     
     /**
      * Creates new form Janela
      */
     public Janela() {
         initComponents();
+        state = new int[9][9];
         //tabela = new JTable(9,9);
-    }
-
-    public void updateTable(int dados[][]) {
         int comprimento = tabela.getHeight() / 9;
         tabela.setShowGrid(true);
         tabela.setRowHeight(comprimento);
+        updateTable(state);
+    }
+
+    public void updateTable(int dados[][]) {
         
         for(int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
                 if (dados[j][i] == 0) {
-                    tabela.setValueAt(" ", j, i);
+                    tabela.setValueAt("", j, i);
                 }
                 else {
                     tabela.setValueAt(dados[j][i], j, i);
                 }
+                state[j][i] = dados[j][i];
             }
         }
         
+    }
+    
+    public int[][] getData() {
+        for(int i =0; i < 9; i++) {
+            for(int j = 0; j < 9; j++) {
+                String value = tabela.getValueAt(j, i).toString();
+                if(value.equals(""))
+                    state[j][i] = 0;
+                else
+                    state[j][i] = Integer.parseInt(value);
+            }
+        }
+        return state;
+    }
+    
+    public void addController(Controller newController) {
+        this.controller = newController;
+        newController.setView(this);
+        this.bCarregar.setActionCommand("Carregar");
+        this.bCarregar.addActionListener(newController);
+        this.bProfundo.setActionCommand("Profundidade");
+        this.bProfundo.addActionListener(newController);
+        this.bHeuristica.setActionCommand("Heuristica");
+        this.bHeuristica.addActionListener(newController);
+        this.bRestricao.setActionCommand("Restricao");
+        this.bRestricao.addActionListener(newController);
     }
     
     /**
@@ -55,10 +84,13 @@ public class Janela extends javax.swing.JFrame {
     private void initComponents() {
 
         tabela = new javax.swing.JTable();
+        bCarregar = new javax.swing.JButton();
+        bProfundo = new javax.swing.JButton();
+        bHeuristica = new javax.swing.JButton();
+        bRestricao = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setPreferredSize(new java.awt.Dimension(400, 400));
-        setResizable(false);
+        setPreferredSize(new java.awt.Dimension(688, 400));
 
         tabela.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -76,21 +108,54 @@ public class Janela extends javax.swing.JFrame {
                 "Título 1", "Título 2", "Título 3", "Título 4", "Título 5", "Título 6", "Título 7", "Título 8", "Título 9"
             }
         ));
-        tabela.setEnabled(false);
+        tabela.setPreferredSize(new java.awt.Dimension(400, 400));
+
+        bCarregar.setText("Carregar arquivo");
+        bCarregar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bCarregarActionPerformed(evt);
+            }
+        });
+
+        bProfundo.setText("Solução por busca em profundidade");
+
+        bHeuristica.setText("Solução por Heurística");
+
+        bRestricao.setText("Solução por restrição");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(tabela, javax.swing.GroupLayout.DEFAULT_SIZE, 408, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(tabela, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(bCarregar, javax.swing.GroupLayout.DEFAULT_SIZE, 294, Short.MAX_VALUE)
+                    .addComponent(bProfundo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(bHeuristica, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(bRestricao, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(tabela, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(bCarregar, javax.swing.GroupLayout.PREFERRED_SIZE, 67, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(bProfundo, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(bHeuristica, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(bRestricao, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addComponent(tabela, javax.swing.GroupLayout.DEFAULT_SIZE, 430, Short.MAX_VALUE)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void bCarregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bCarregarActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_bCarregarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -98,6 +163,10 @@ public class Janela extends javax.swing.JFrame {
     
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton bCarregar;
+    private javax.swing.JButton bHeuristica;
+    private javax.swing.JButton bProfundo;
+    private javax.swing.JButton bRestricao;
     private javax.swing.JTable tabela;
     // End of variables declaration//GEN-END:variables
 }
