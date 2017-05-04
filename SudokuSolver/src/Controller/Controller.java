@@ -83,7 +83,7 @@ public class Controller implements ActionListener{
         }
         else if (ae.getActionCommand().equals("Profundidade")) {
             int[][] data = view.getData();
-            //solucionador.buscaCega(data,0,0);
+            solucionador.buscaCega2(data,0,0);
             view.updateTable(data);
         }
         else if (ae.getActionCommand().equals("Heuristica")) {
