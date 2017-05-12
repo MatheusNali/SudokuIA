@@ -18,7 +18,7 @@ public class Janela extends javax.swing.JFrame {
 
     private int state[][];
     private Controller controller;
-    
+
     /**
      * Creates new form Janela
      */
@@ -33,34 +33,34 @@ public class Janela extends javax.swing.JFrame {
     }
 
     public void updateTable(int dados[][]) {
-        
-        for(int i = 0; i < 9; i++) {
+
+        for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
                 if (dados[j][i] == 0) {
                     tabela.setValueAt("", j, i);
-                }
-                else {
+                } else {
                     tabela.setValueAt(dados[j][i], j, i);
                 }
                 state[j][i] = dados[j][i];
             }
         }
-        
+
     }
-    
+
     public int[][] getData() {
-        for(int i =0; i < 9; i++) {
-            for(int j = 0; j < 9; j++) {
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
                 String value = tabela.getValueAt(j, i).toString();
-                if(value.equals(""))
+                if (value.equals("")) {
                     state[j][i] = 0;
-                else
+                } else {
                     state[j][i] = Integer.parseInt(value);
+                }
             }
         }
         return state;
     }
-    
+
     public void addController(Controller newController) {
         this.controller = newController;
         newController.setView(this);
@@ -73,7 +73,7 @@ public class Janela extends javax.swing.JFrame {
         this.bRestricao.setActionCommand("Restricao");
         this.bRestricao.addActionListener(newController);
     }
-    
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -88,6 +88,7 @@ public class Janela extends javax.swing.JFrame {
         bProfundo = new javax.swing.JButton();
         bHeuristica = new javax.swing.JButton();
         bRestricao = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setPreferredSize(new java.awt.Dimension(688, 400));
@@ -123,6 +124,8 @@ public class Janela extends javax.swing.JFrame {
 
         bRestricao.setText("Solução por restrição");
 
+        jLabel1.setText("Tempo:");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -131,10 +134,11 @@ public class Janela extends javax.swing.JFrame {
                 .addComponent(tabela, javax.swing.GroupLayout.PREFERRED_SIZE, 400, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(bCarregar, javax.swing.GroupLayout.DEFAULT_SIZE, 294, Short.MAX_VALUE)
+                    .addComponent(bCarregar, javax.swing.GroupLayout.DEFAULT_SIZE, 288, Short.MAX_VALUE)
                     .addComponent(bProfundo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(bHeuristica, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(bRestricao, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addComponent(bRestricao, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -146,6 +150,8 @@ public class Janela extends javax.swing.JFrame {
                 .addComponent(bHeuristica, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(bRestricao, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addComponent(tabela, javax.swing.GroupLayout.DEFAULT_SIZE, 430, Short.MAX_VALUE)
         );
@@ -160,13 +166,13 @@ public class Janela extends javax.swing.JFrame {
     /**
      * @param args the command line arguments
      */
-    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton bCarregar;
     private javax.swing.JButton bHeuristica;
     private javax.swing.JButton bProfundo;
     private javax.swing.JButton bRestricao;
+    private javax.swing.JLabel jLabel1;
     private javax.swing.JTable tabela;
     // End of variables declaration//GEN-END:variables
 }

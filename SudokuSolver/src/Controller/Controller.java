@@ -1,25 +1,13 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package Controller;
 
 import Viewer.Janela;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-/**
- *
- * @author Arthur
- */
-public class Controller implements ActionListener{
+public class Controller implements ActionListener {
 
-    /**
-     * @param args the command line arguments
-     */
     public static void main(String[] args) {
-        /* Set the Nimbus look and feel */
+
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
@@ -58,39 +46,37 @@ public class Controller implements ActionListener{
     Janela view;
     FileInput file;
     Solver solucionador;
-    
+
     //Construtor
     public Controller() {
         file = new FileInput();
         solucionador = new Solver();
     }
-    
+
     //Métodos
     public void setView(Janela newView) {
         view = newView;
     }
-    
+
     @Override
     public void actionPerformed(ActionEvent ae) {
-        if(ae.getActionCommand().equals("Carregar")) {
+        if (ae.getActionCommand().equals("Carregar")) {
             try {
                 int[][] data = file.readInput();
                 view.updateTable(data);
-            }
-            catch(Exception e) {
+            } catch (Exception e) {
                 System.out.println("Nenhum arquivo encontrado. Erro: " + e.toString());
             }
-        }
-        else if (ae.getActionCommand().equals("Profundidade")) {
-            int[][] data = view.getData();
-            solucionador.buscaCega2(data,0,0);
-            view.updateTable(data);
-        }
-        else if (ae.getActionCommand().equals("Heuristica")) {
+        } else if (ae.getActionCommand().equals("Profundidade")) {
+            int[][] data = view.getData(); //Chama método que preenche a matriz data com valores obtidos do arquivo de texto "SudokuInput.txt".
+            solucionador.buscaCega(data, 0, 0); //Método para buscar solução com busca cega.
+            view.updateTable(data); //Atualiza tabela com a solução.
+        } else if (ae.getActionCommand().equals("Heuristica")) {
             System.out.println("Não tem nada aqui");
-        }
-        else if (ae.getActionCommand().equals("Restricao")) {
-            System.out.println("Para de clicar em mim");
+        } else if (ae.getActionCommand().equals("Restricao")) {
+            int[][] data = view.getData();
+            int[][][] nValidos = new int[9][9][9]; //Matriz 9x9x9 onde duas dimensões referem-se à posição [i,j] no Sudoku e a outra dimensão refere-se aos possiveis valores daquela posição.
+            solucionador.buscaRestricoes(data, nValidos, 0, 0);
         }
     }
 }

@@ -1,86 +1,56 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package Controller;
 
-/**
- *
- * @author Arthur
- */
+//Classe que contém os métodos para buscar a solução.
 public class Solver {
+    
+    public boolean buscaRestricoes(int[][] MSudoku, int[][][] nValidos, int i, int j) {
 
-    public boolean buscaCega(int[][] MSudoku, int i, int j) {
-        if (i == 9 && j == 0) {
-            return true;
-        }
-
-        if (MSudoku[i][j] != 0) {
-            if (++j == 9) {
-                return buscaCega(MSudoku, i+1, 0);
-            } else {
-                return buscaCega(MSudoku, i, j+1);
-            }
-        } else {
-            for (int valor = 1; valor <= 9; valor++) {
-                if (valido(MSudoku, i, j, valor)) {
-                    MSudoku[i][j] = valor;
-
-                    if (buscaCega(MSudoku, i, j+1)) {
-                        return true;
-                    }
-                }
-            }
-            MSudoku[i][j] = 0;
-            return false;
-        }
+        return false;
     }
 
-    public boolean buscaCega2(int[][] MSudoku, int i, int j) {
-        if (i == 9) {
-            i = 0; // row 9 doesn't exist, overflow back to 0!
-            if (++j == 9) { // col 9 doesn't exist! You've reach the end of the grid!
-                return true; // By right, that must be the solution.
+    public boolean buscaCega(int[][] MSudoku, int i, int j) {
+        if (j == 9) {
+            j = 0;  //Não existe coluna 9, chegou no limite. Volta para a primeira coluna.
+            if (++i == 9) { //Não existe linha 9, chegou no final do Sudoku.
+                return true; // Retorna true pois para chegar no final é preciso preencher todas as outras células corretamente.
             }
         }
 
-        if (MSudoku[i][j] != 0) { // Already answered, recurse somewhere else!
-            return buscaCega2(MSudoku, i+1, j);
+        if (MSudoku[i][j] != 0) { //Já possui valor, recursão na próxima coluna.
+            return buscaCega(MSudoku, i, j + 1);
         }
 
-        // Keep filling in numbers until they are valid.
+        // Procura por um número válido.
         for (int v = 1; v <= 9; v++) {
-            if (valido(MSudoku, i, j, v)) {
+            if (Valido(MSudoku, i, j, v)) {
                 MSudoku[i][j] = v;
-                // Recurse into child node.
-                if (buscaCega2(MSudoku, i+1, j)) {
+                // Recursão para a próxima coluna.
+                if (buscaCega(MSudoku, i, j + 1)) {
                     return true;
                 }
             }
         }
 
-        //System.out.print(".");
-        // This solution failed, backtracking...
+        //Solução 'v' proposta falhou, volta para a chamada anterior e testa outro valor 'v'. 
         MSudoku[i][j] = 0;
         return false;
 
     }
 
-    public boolean valido(int[][] MSudoku, int i, int j, int valor) {
-        for (int col = 0; col < 9; col++) {
+    public boolean Valido(int[][] MSudoku, int i, int j, int valor) {
+        for (int col = 0; col < 9; col++) { //Percorre a coluna para descobrir se o número candidato já existe nela.
             if (MSudoku[col][j] == valor) {
                 return false;
             }
         }
-        for (int lin = 0; lin < 9; lin++) {
+        for (int lin = 0; lin < 9; lin++) { //Percorre a linha para descobrir se o número candidato já existe nela.
             if (MSudoku[i][lin] == valor) {
                 return false;
             }
         }
-        int boxLin = (j / 3) * 3;
+        int boxLin = (j / 3) * 3; //Obs: Divisão de números inteiros. Retorna o piso.
         int boxCol = (i / 3) * 3;
-        for (int boxL = 0; boxL < 3; boxL++) {
+        for (int boxL = 0; boxL < 3; boxL++) { //Percorre a grid 3x3 para descobrir se o número candidato já existe nela.
             for (int boxC = 0; boxC < 3; boxC++) {
                 if (MSudoku[boxCol + boxC][boxLin + boxL] == valor) {
                     return false;

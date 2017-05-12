@@ -3,36 +3,40 @@ package Controller;
 import java.io.BufferedReader;
 import java.io.FileReader;
 
-/**
- *
- * @author Nali
- */
 public class FileInput {
-	
+
     public int[][] readInput() throws Exception {
-        
-        int[][] input = new int[9][9];
-        
-        FileReader File = new FileReader("SudokuInput.txt");
+
+        int[][] input = new int[9][9]; //Matriz 9x9 que será preenchida com os números do arquivo "SudokuInput.txt"
+
+        FileReader File = new FileReader("SudokuInput.txt");  
         BufferedReader Reader = new BufferedReader(File);
 
         String Line = Reader.readLine();
-        
-        for(int i=0; i<9; i++){
-            for(int j=0; j<9; j++){
+
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
                 input[i][j] = Integer.parseInt(Line.split(" ")[j]);
             }
             Line = Reader.readLine();
         }
-        
-        for(int i=0; i<9; i++){
-            for(int j=0; j<9; j++){
-                System.out.print(input[i][j]+" ");
-            }
-            System.out.print("\n");
-        }
-        
+
         return input;
 
     }
 }
+
+/* 0 representa os espaços não preenchidos.
+
+Exemplo do arquivo txt:
+6 0 0 0 0 0 2 9 5
+7 0 0 4 9 0 6 0 0
+2 8 0 0 5 0 0 0 0
+0 0 0 9 2 7 0 3 0
+0 9 2 8 0 5 7 1 0
+0 4 0 1 6 3 0 0 0
+0 0 0 0 3 0 0 5 9
+0 0 3 0 7 8 0 0 2
+4 2 8 0 0 0 0 0 7
+
+*/
