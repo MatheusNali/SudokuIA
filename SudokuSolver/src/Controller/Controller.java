@@ -3,6 +3,7 @@ package Controller;
 import Viewer.Janela;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 public class Controller implements ActionListener {
 
@@ -75,8 +76,23 @@ public class Controller implements ActionListener {
             System.out.println("Não tem nada aqui");
         } else if (ae.getActionCommand().equals("Restricao")) {
             int[][] data = view.getData();
-            int[][][] nValidos = new int[9][9][9]; //Matriz 9x9x9 onde duas dimensões referem-se à posição [i,j] no Sudoku e a outra dimensão refere-se aos possiveis valores daquela posição.
-            solucionador.buscaRestricoes(data, nValidos, 0, 0);
+            //int[][][] nValidos = new int[9][9][9]; //Matriz 9x9x9 onde duas dimensões referem-se à posição [i,j] no Sudoku e a outra dimensão refere-se aos possiveis valores daquela posição.
+            
+            ArrayList<Integer>[][] nValidos = new ArrayList[9][9];
+            
+            for(int A=0; A<9; A++){
+                for(int B=0; B<9; B++){
+                    nValidos[A][B] = new ArrayList<Integer>();
+                }
+            }
+            
+            solucionador.buscaRestricoes2(data, nValidos, 0, 0, 0);
+            /*if(solucionador.buscaRestricoes2(data, nValidos, 0, 0, 0)){
+            view.updateTable(data);
+            }else{
+                System.out.println("Não há solução possível");
+            }*/
+                        view.updateTable(data);
         }
     }
 }
