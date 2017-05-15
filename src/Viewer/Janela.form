@@ -34,7 +34,7 @@
                   <Component id="bProfundo" max="32767" attributes="0"/>
                   <Component id="bHeuristica" max="32767" attributes="0"/>
                   <Component id="bRestricao" max="32767" attributes="0"/>
-                  <Component id="jLabel1" max="32767" attributes="0"/>
+                  <Component id="labelTime" max="32767" attributes="0"/>
               </Group>
           </Group>
       </Group>
@@ -50,7 +50,7 @@
               <EmptySpace max="-2" attributes="0"/>
               <Component id="bRestricao" min="-2" pref="73" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
-              <Component id="jLabel1" min="-2" pref="35" max="-2" attributes="0"/>
+              <Component id="labelTime" min="-2" pref="35" max="-2" attributes="0"/>
               <EmptySpace max="32767" attributes="0"/>
           </Group>
           <Component id="tabela" pref="430" max="32767" attributes="0"/>
@@ -101,7 +101,7 @@
         <Property name="text" type="java.lang.String" value="Solu&#xe7;&#xe3;o por restri&#xe7;&#xe3;o"/>
       </Properties>
     </Component>
-    <Component class="javax.swing.JLabel" name="jLabel1">
+    <Component class="javax.swing.JLabel" name="labelTime">
       <Properties>
         <Property name="text" type="java.lang.String" value="Tempo:"/>
       </Properties>

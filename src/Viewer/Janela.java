@@ -73,6 +73,10 @@ public class Janela extends javax.swing.JFrame {
         this.bRestricao.setActionCommand("Restricao");
         this.bRestricao.addActionListener(newController);
     }
+    
+    public void setText(String text) {
+        labelTime.setText(text);
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -88,7 +92,7 @@ public class Janela extends javax.swing.JFrame {
         bProfundo = new javax.swing.JButton();
         bHeuristica = new javax.swing.JButton();
         bRestricao = new javax.swing.JButton();
-        jLabel1 = new javax.swing.JLabel();
+        labelTime = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setPreferredSize(new java.awt.Dimension(688, 400));
@@ -124,7 +128,7 @@ public class Janela extends javax.swing.JFrame {
 
         bRestricao.setText("Solução por restrição");
 
-        jLabel1.setText("Tempo:");
+        labelTime.setText("Tempo:");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -138,7 +142,7 @@ public class Janela extends javax.swing.JFrame {
                     .addComponent(bProfundo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(bHeuristica, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(bRestricao, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                    .addComponent(labelTime, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -151,7 +155,7 @@ public class Janela extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(bRestricao, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(labelTime, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addComponent(tabela, javax.swing.GroupLayout.DEFAULT_SIZE, 430, Short.MAX_VALUE)
         );
@@ -172,7 +176,7 @@ public class Janela extends javax.swing.JFrame {
     private javax.swing.JButton bHeuristica;
     private javax.swing.JButton bProfundo;
     private javax.swing.JButton bRestricao;
-    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel labelTime;
     private javax.swing.JTable tabela;
     // End of variables declaration//GEN-END:variables
 }
