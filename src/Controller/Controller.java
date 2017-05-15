@@ -63,10 +63,11 @@ public class Controller implements ActionListener {
     public void actionPerformed(ActionEvent ae) {
         if (ae.getActionCommand().equals("Carregar")) {
             try {
-                int[][] data = file.readInput();
+                String path = "Puzzle" + view.getFileNumber() + ".txt";
+                int[][] data = file.readInput(path);
                 view.updateTable(data);
             } catch (Exception e) {
-                System.out.println("Nenhum arquivo encontrado. Erro: " + e.toString());
+                view.setText("Nenhum arquivo encontrado.");
             }
         } else if (ae.getActionCommand().equals("Profundidade")) {
             int[][] data = view.getData(); //Chama método que preenche a matriz data com valores obtidos do arquivo de texto "SudokuInput.txt".

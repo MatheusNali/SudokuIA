@@ -5,11 +5,11 @@ import java.io.FileReader;
 
 public class FileInput {
 
-    public int[][] readInput() throws Exception {
+    public int[][] readInput(String Path) throws Exception {
 
         int[][] input = new int[9][9]; //Matriz 9x9 que será preenchida com os números do arquivo "SudokuInput.txt"
 
-        FileReader File = new FileReader("SudokuInput.txt");  
+        FileReader File = new FileReader(Path);  
         BufferedReader Reader = new BufferedReader(File);
 
         String Line = Reader.readLine();
