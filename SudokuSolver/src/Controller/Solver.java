@@ -1,9 +1,65 @@
 package Controller;
 
 //Classe que contém os métodos para buscar a solução.
+import java.util.ArrayList;
+
 public class Solver {
-    
-    public boolean buscaRestricoes(int[][] MSudoku, int[][][] nValidos, int i, int j) {
+
+    public boolean buscaRestricoes(int[][] MSudoku, int i, int j, int R) {
+
+        if (j == 9) {
+            j = 0;  //Não existe coluna 9, chegou no limite. Volta para a primeira coluna.
+            if (++i == 9) { //Não existe linha 9, chegou no final do Sudoku.
+                if (ValidarSudoku(MSudoku)) {
+                    return true; // Retorna true pois para chegar no final é preciso preencher todas as outras células corretamente.
+                } else {
+                    return buscaRestricoes(MSudoku, 0, 0, R + 1);
+                }
+            }
+        }
+
+        ArrayList<Integer> nValidos = new ArrayList();
+
+        if (MSudoku[i][j] != 0) { //Já possui valor, recursão na próxima coluna.
+            return buscaRestricoes(MSudoku, i, j + 1, R);
+        }
+
+        for (int v = 1; v <= 9; v++) {
+            if (Valido(MSudoku, i, j, v)) {
+                nValidos.add(v);
+            }
+        }
+
+        switch (R) {
+            case 0:
+                if (nValidos.size() == 1) {
+                    MSudoku[i][j] = nValidos.get(0);
+                    if (buscaRestricoes(MSudoku, i, j + 1, R)) {
+                        return true;
+                    }
+                    MSudoku[i][j] = 0;
+                    return false;
+                } else if (nValidos.size() == 0) {
+                    return false;
+                } else {
+                    return buscaRestricoes(MSudoku, i, j + 1, R);
+                }
+
+            case 1:
+                if (nValidos.size() >= 1) {
+                    for (int D = 0; D < nValidos.size(); D++) {
+                        MSudoku[i][j] = nValidos.get(D);
+                        if (buscaRestricoes(MSudoku, 0, 0, 0)) {
+                            return true;
+                        }
+                    }
+
+                    MSudoku[i][j] = 0;
+                    return false;
+                } else {
+                    return false;
+                }
+        }
 
         return false;
     }
@@ -53,6 +109,17 @@ public class Solver {
         for (int boxL = 0; boxL < 3; boxL++) { //Percorre a grid 3x3 para descobrir se o número candidato já existe nela.
             for (int boxC = 0; boxC < 3; boxC++) {
                 if (MSudoku[boxCol + boxC][boxLin + boxL] == valor) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    private boolean ValidarSudoku(int[][] MSudoku) {
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                if (MSudoku[i][j] == 0) {
                     return false;
                 }
             }
