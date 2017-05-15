@@ -70,15 +70,26 @@ public class Controller implements ActionListener {
             }
         } else if (ae.getActionCommand().equals("Profundidade")) {
             int[][] data = view.getData(); //Chama método que preenche a matriz data com valores obtidos do arquivo de texto "SudokuInput.txt".
+            long startTime = System.nanoTime();
             solucionador.buscaCega(data, 0, 0); //Método para buscar solução com busca cega.
+            long finalTime = System.nanoTime();
             view.updateTable(data); //Atualiza tabela com a solução.
+            view.setText("Tempo: " + (finalTime-startTime)/1000 + " us");
         } else if (ae.getActionCommand().equals("Heuristica")) {
-            System.out.println("Não tem nada aqui");
+            int[][] data = view.getData();
+            long startTime = System.nanoTime();
+            //solucionador.buscaHeuristica();
+            long finalTime = System.nanoTime();
+            view.updateTable(data); //Atualiza tabela com a solução.
+            view.setText("Não tem nada aqui, mas... Tempo: " + (finalTime-startTime)/1000 + " us");     
         } else if (ae.getActionCommand().equals("Restricao")) {
             int[][] data = view.getData();
 
+            long startTime = System.nanoTime();
             solucionador.buscaRestricoes(data, 0, 0, 0);
+            long finalTime = System.nanoTime();
             view.updateTable(data);
+            view.setText("Tempo: " + (finalTime-startTime)/1000 + " us");
         }
     }
 }
