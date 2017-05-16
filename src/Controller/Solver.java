@@ -164,11 +164,14 @@ public class Solver {
         updateLocalOccurrenceVector(occurrenceVector, currSubGroup, possibilityTable, 
             subGroupOrder.get(currSubGroup).x(), subGroupOrder.get(currSubGroup).y());
         
-        int biggestValue = -1; // To find the number that most occurr on the sub group
+        int smallestValue = 20; // To find the number that most occurr on the sub group
         int killerNumber = -1; // Stores the number that occurs more on the subGroup possibility
         for(int i = 0; i < 9; i++) {
-            if(biggestValue < occurrenceVector.get(currSubGroup).get(i)) {
-                biggestValue = occurrenceVector.get(currSubGroup).get(i);
+            if(smallestValue > occurrenceVector.get(currSubGroup).get(i)) {
+                if(occurrenceVector.get(currSubGroup).get(i) == 0) {
+                    continue;
+                }
+                smallestValue = occurrenceVector.get(currSubGroup).get(i);
                 killerNumber = i;
             }
         }
