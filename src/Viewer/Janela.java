@@ -32,6 +32,10 @@ public class Janela extends javax.swing.JFrame {
         updateTable(state);
     }
 
+    /**
+     * Atualiza os dados da tabela para o vetor dado
+     * @param dados 
+     */
     public void updateTable(int dados[][]) {
 
         for (int i = 0; i < 9; i++) {
@@ -47,6 +51,10 @@ public class Janela extends javax.swing.JFrame {
 
     }
 
+    /**
+     * Retorna um vetor com os dados presentes na tabela
+     * @return dados[9][9]
+     */
     public int[][] getData() {
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
@@ -61,6 +69,10 @@ public class Janela extends javax.swing.JFrame {
         return state;
     }
 
+    /**
+     * Dado um controller, realiza a ligação das ações dos botões com o controlador
+     * @param newController 
+     */
     public void addController(Controller newController) {
         this.controller = newController;
         newController.setView(this);
@@ -74,10 +86,18 @@ public class Janela extends javax.swing.JFrame {
         this.bRestricao.addActionListener(newController);
     }
     
+    /**
+     * Retorna o número do arquivo selecionado
+     * @return fileNumber
+     */
     public int getFileNumber() {
         return (Integer) numberFile.getValue();
     }
     
+    /**
+     * Define o texto de situação
+     * @param text 
+     */
     public void setText(String text) {
         labelTime.setText(text);
     }

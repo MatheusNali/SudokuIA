@@ -6,7 +6,7 @@
 package Utils;
 
 /**
- *
+ * Classe usada para definir coordenadas x e y
  * @author paulojeunon
  */
 public class Coordinates {

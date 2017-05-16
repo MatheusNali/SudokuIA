@@ -6,6 +6,15 @@ import java.util.ArrayList;
 
 public class Solver {
 
+    /**
+     * Função recursiva para encontrar a solução por satisfação de restrição
+     * Toma como parâmetro inicial as variaveis i, j, r = 0
+     * @param MSudoku
+     * @param i
+     * @param j
+     * @param R
+     * @return FoundSolution
+     */
     public boolean buscaRestricoes(int[][] MSudoku, int i, int j, int R) {
 
         if (j == 9) {
@@ -65,6 +74,16 @@ public class Solver {
         return false;
     }
 
+    /**
+     * Função recursiva para encontrar o resultado por busca cega.
+     * Toma como parâmetros a matriz original, que será modificada para a resposta,
+     * as coordenadas i e j do ponto sendo trabalhado no momento.
+     * Para o caso inicial, i e j são iguais a zero
+     * @param MSudoku
+     * @param i
+     * @param j
+     * @return FoundSolution
+     */
     public boolean buscaCega(int[][] MSudoku, int i, int j) {
         if (j == 9) {
             j = 0;  //Não existe coluna 9, chegou no limite. Volta para a primeira coluna.
@@ -94,6 +113,15 @@ public class Solver {
 
     }
 
+    /**
+     * Função para dado uma matriz, uma posição e um valor, retorna se o valor pode
+     * ser colocado naquela posição
+     * @param MSudoku
+     * @param i
+     * @param j
+     * @param valor
+     * @return valido
+     */
     public boolean Valido(int[][] MSudoku, int i, int j, int valor) {
         for (int col = 0; col < 9; col++) { //Percorre a coluna para descobrir se o número candidato já existe nela.
             if (MSudoku[col][j] == valor) {
@@ -117,6 +145,11 @@ public class Solver {
         return true;
     }
 
+    /**
+     * Varifica se o sudoku não possui valores nulos
+     * @param MSudoku
+     * @return valido
+     */
     private boolean ValidarSudoku(int[][] MSudoku) {
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {

@@ -55,13 +55,23 @@ public class Controller implements ActionListener {
         solucionador = new Solver();
     }
 
-    //Métodos
+    //Métodos ------------------------------------------------------------------
+    /**
+     * Define view do programa
+     * @param newView 
+     */
     public void setView(Janela newView) {
         view = newView;
     }
 
+    /**
+     * Define ações para quando clicar no botão
+     * @param ae 
+     */
     @Override
     public void actionPerformed(ActionEvent ae) {
+        
+        //Botao carregar
         if (ae.getActionCommand().equals("Carregar")) {
             try {
                 String path = "Puzzle" + view.getFileNumber() + ".txt";
@@ -70,7 +80,10 @@ public class Controller implements ActionListener {
             } catch (Exception e) {
                 view.setText("Nenhum arquivo encontrado.");
             }
-        } else if (ae.getActionCommand().equals("Profundidade")) {
+        } 
+        
+        //Botao de busca em profundidade
+        else if (ae.getActionCommand().equals("Profundidade")) {
             int[][] data = view.getData(); //Chama método que preenche a matriz data com valores obtidos do arquivo de texto "SudokuInput.txt".
             long startTime = System.nanoTime();
             Boolean resultado = solucionador.buscaCega(data, 0, 0); //Método para buscar solução com busca cega.
@@ -81,7 +94,10 @@ public class Controller implements ActionListener {
             }
             else
                 view.setText("Não tem solução. Tempo: " + (finalTime-startTime)/1000 + " us");
-        } else if (ae.getActionCommand().equals("Heuristica")) {
+        } 
+        
+        //Botao de busca heurística
+        else if (ae.getActionCommand().equals("Heuristica")) {
             int[][] data = view.getData();
             
             // Allocate both the possibilityTable and the occurrenceVector
@@ -116,7 +132,10 @@ public class Controller implements ActionListener {
             }
             else
                 view.setText("Não tem solução. Tempo: " + (finalTime-startTime)/1000 + " us");
-        } else if (ae.getActionCommand().equals("Restricao")) {
+        } 
+        
+        //Botao de busca por restrição
+        else if (ae.getActionCommand().equals("Restricao")) {
             int[][] data = view.getData();
 
             long startTime = System.nanoTime();
@@ -131,6 +150,12 @@ public class Controller implements ActionListener {
         }
     }
     
+    /**
+     * Cria um vetor ordenado com as cordenadas de ínício de cada quadrante, de maneira
+     * que esteja em ordem decrescente de número de dicas naquele quadrante
+     * @param sudokuBoard
+     * @param subGroupOrder 
+     */
     public void getSubGroupOrder(int[][] sudokuBoard, ArrayList<Coordinates> subGroupOrder) {
         
         // Temp array to store all the sub group's initial coordinates
@@ -159,6 +184,13 @@ public class Controller implements ActionListener {
         }
     }
     
+    /**
+     * Função auxiliar para encontrar quantos grupos vazios possui um quadrante
+     * @param sudokuBoard
+     * @param startX
+     * @param startY
+     * @return numberOfEmptyStates
+     */
     public int getNumberOfEmptyStatesOnSubGroup(int[][] sudokuBoard, int startX, int startY) {
         
         int counter = 0;
