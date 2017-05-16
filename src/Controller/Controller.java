@@ -73,13 +73,16 @@ public class Controller implements ActionListener {
         } else if (ae.getActionCommand().equals("Profundidade")) {
             int[][] data = view.getData(); //Chama método que preenche a matriz data com valores obtidos do arquivo de texto "SudokuInput.txt".
             long startTime = System.nanoTime();
-            solucionador.buscaCega(data, 0, 0); //Método para buscar solução com busca cega.
+            Boolean resultado = solucionador.buscaCega(data, 0, 0); //Método para buscar solução com busca cega.
             long finalTime = System.nanoTime();
-            view.updateTable(data); //Atualiza tabela com a solução.
-            view.setText("Tempo: " + (finalTime-startTime)/1000 + " us");
+            if (resultado) {
+                view.updateTable(data); //Atualiza tabela com a solução.
+                view.setText("Tempo: " + (finalTime-startTime)/1000 + " us");
+            }
+            else
+                view.setText("Não tem solução. Tempo: " + (finalTime-startTime)/1000 + " us");
         } else if (ae.getActionCommand().equals("Heuristica")) {
             int[][] data = view.getData();
-            long startTime = System.nanoTime();
             
             ArrayList<ArrayList<ArrayList<Integer>>> possibilityTable = new ArrayList<>();
             ArrayList<ArrayList<Integer>> occurrenceVector = new ArrayList<>();
@@ -99,20 +102,29 @@ public class Controller implements ActionListener {
                 howManyToFill.add(getNumberOfEmptyStatesOnSubGroup(data, currCoord.x(), currCoord.y()));
             }
             
-            solucionador.tabuSearch(data, subGroupOrder, 0, possibilityTable, occurrenceVector,
-                    howManyToFill);
+            long startTime = System.nanoTime();
             
+            Boolean resultado = solucionador.tabuSearch(data, subGroupOrder, 0, possibilityTable, occurrenceVector,
+                    howManyToFill);
             long finalTime = System.nanoTime();
-            view.updateTable(data); //Atualiza tabela com a solução.
-            view.setText("Tempo: " + (finalTime-startTime)/1000 + " us");
+            if (resultado) {
+                view.updateTable(data); //Atualiza tabela com a solução.
+                view.setText("Tempo: " + (finalTime-startTime)/1000 + " us");
+            }
+            else
+                view.setText("Não tem solução. Tempo: " + (finalTime-startTime)/1000 + " us");
         } else if (ae.getActionCommand().equals("Restricao")) {
             int[][] data = view.getData();
 
             long startTime = System.nanoTime();
-            solucionador.buscaRestricoes(data, 0, 0, 0);
+            Boolean resultado = solucionador.buscaRestricoes(data, 0, 0, 0);
             long finalTime = System.nanoTime();
-            view.updateTable(data);
-            view.setText("Tempo: " + (finalTime-startTime)/1000 + " us");
+            if (resultado) {
+                view.updateTable(data);
+                view.setText("Tempo: " + (finalTime-startTime)/1000 + " us");
+            }
+            else
+                view.setText("Não tem solução. Tempo: " + (finalTime-startTime)/1000 + " us");
         }
     }
     
