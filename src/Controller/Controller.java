@@ -4,6 +4,7 @@ import Viewer.Janela;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import Utils.Coordinates;
 
 public class Controller implements ActionListener {
 
@@ -79,10 +80,31 @@ public class Controller implements ActionListener {
         } else if (ae.getActionCommand().equals("Heuristica")) {
             int[][] data = view.getData();
             long startTime = System.nanoTime();
-            //solucionador.buscaHeuristica();
+            
+            ArrayList<ArrayList<ArrayList<Integer>>> possibilityTable = new ArrayList<>();
+            ArrayList<ArrayList<Integer>> occurrenceVector = new ArrayList<>();
+            for(int i = 0; i < 9; i++) {
+                possibilityTable.add(new ArrayList<>());
+                occurrenceVector.add(new ArrayList<>());
+                for(int j = 0; j < 9; j++) {
+                    possibilityTable.get(i).add(new ArrayList<>());
+                }
+            }   
+            
+            ArrayList<Coordinates> subGroupOrder = new ArrayList<>();
+            ArrayList<Integer> howManyToFill = new ArrayList<>();
+            
+            getSubGroupOrder(data, subGroupOrder);
+            for(Coordinates currCoord : subGroupOrder) {
+                howManyToFill.add(getNumberOfEmptyStatesOnSubGroup(data, currCoord.x(), currCoord.y()));
+            }
+            
+            solucionador.tabuSearch(data, subGroupOrder, 0, possibilityTable, occurrenceVector,
+                    howManyToFill);
+            
             long finalTime = System.nanoTime();
             view.updateTable(data); //Atualiza tabela com a solução.
-            view.setText("Não tem nada aqui, mas... Tempo: " + (finalTime-startTime)/1000 + " us");
+            view.setText("Tempo: " + (finalTime-startTime)/1000 + " us");
         } else if (ae.getActionCommand().equals("Restricao")) {
             int[][] data = view.getData();
 
@@ -93,4 +115,45 @@ public class Controller implements ActionListener {
             view.setText("Tempo: " + (finalTime-startTime)/1000 + " us");
         }
     }
+    
+    public void getSubGroupOrder(int[][] sudokuBoard, ArrayList<Coordinates> subGroupOrder) {
+        
+        ArrayList<Coordinates> temp = new ArrayList<>();
+        
+        for(int i = 0; i < 9; i=i+3) {
+            for(int j = 0; j < 9; j=j+3) {
+                temp.add(new Coordinates(i, j));
+            }
+        }
+        
+        int lessNumberOfStates = 15;
+        int lessNumberPosition = 0;
+        for(int i = 0; i < 9; i++) {
+            for(int j = 0; j < temp.size(); j++) {
+                if(lessNumberOfStates > getNumberOfEmptyStatesOnSubGroup(sudokuBoard, temp.get(j).x(), temp.get(j).y())) {
+                    lessNumberOfStates = getNumberOfEmptyStatesOnSubGroup(sudokuBoard, temp.get(j).x(), temp.get(j).y());
+                    lessNumberPosition = j;
+                }
+            }
+            lessNumberOfStates = 15;
+            subGroupOrder.add(new Coordinates(temp.get(lessNumberPosition).x(), temp.get(lessNumberPosition).y()));
+            temp.remove(lessNumberPosition);
+        }
+    }
+    
+    public int getNumberOfEmptyStatesOnSubGroup(int[][] sudokuBoard, int startX, int startY) {
+        
+        int counter = 0;
+        
+        for(int i = startX; i < 3+startX; i++) {
+            for(int j = startY; j < 3+startY; j++) {
+                if(sudokuBoard[i][j] == 0) {
+                   counter++; 
+                }
+            }
+        }
+        
+        return counter;
+    }
+
 }

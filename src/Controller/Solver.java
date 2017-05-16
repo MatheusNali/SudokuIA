@@ -1,6 +1,7 @@
 package Controller;
 
 //Classe que contém os métodos para buscar a solução.
+import Utils.Coordinates;
 import java.util.ArrayList;
 
 public class Solver {
@@ -126,4 +127,208 @@ public class Solver {
         }
         return true;
     }
+    
+    /**
+     *
+     * @param sudokuBoard // The sudoku board to be solved
+     * 
+     * @param subGroupOrder // The coordinate of the first element of the 3x3 subGrops
+     *                      // in decreasing order of states already attributed.   
+     * 
+     * @param currSubGroup // Indicates the current position on the subGroupOrder vector
+     * 
+     * @param possibilityTable // Table that stores the possibilities for each Sudoku state
+     * 
+     * @param occurrenceVector
+     * 
+     * @param howManyToFill // Must be prepared from the caller of the function
+     * @return
+     */
+    public boolean tabuSearch(int[][] sudokuBoard, ArrayList<Coordinates> subGroupOrder, 
+            int currSubGroup, ArrayList<ArrayList<ArrayList<Integer>>> possibilityTable, 
+            ArrayList<ArrayList<Integer>> occurrenceVector, ArrayList<Integer> howManyToFill) {   
+        
+        if(currSubGroup >= 9) {
+            return true; // Finished the Sudoku
+        }
+        
+        if(howManyToFill.get(currSubGroup) == 0) {
+             // If all the empty states ware filled, go to the next state                        
+            return tabuSearch(sudokuBoard, subGroupOrder, currSubGroup+1, possibilityTable, 
+                    occurrenceVector, howManyToFill);
+        }
+        
+        updateLocalPossibilityTable(possibilityTable, sudokuBoard, 
+            subGroupOrder.get(currSubGroup).x(), subGroupOrder.get(currSubGroup).y());
+                
+        updateLocalOccurrenceVector(occurrenceVector, currSubGroup, possibilityTable, 
+            subGroupOrder.get(currSubGroup).x(), subGroupOrder.get(currSubGroup).y());
+        
+        int biggestValue = -1; // To find the number that most occurr on the sub group
+        int killerNumber = -1; // Stores the number that occurs more on the subGroup possibility
+        for(int i = 0; i < 9; i++) {
+            if(biggestValue < occurrenceVector.get(currSubGroup).get(i)) {
+                biggestValue = occurrenceVector.get(currSubGroup).get(i);
+                killerNumber = i;
+            }
+        }
+        
+        killerNumber++;
+        
+        // Make an array with the places where you can put the killer number
+        int currX = subGroupOrder.get(currSubGroup).x();
+        int currY = subGroupOrder.get(currSubGroup).y();        
+        ArrayList<Coordinates> posToFill = new ArrayList<>();
+        
+        for(int i = currX; i < 3+currX; i++) {
+            for(int j = currY; j < 3+currY; j++) {
+                for(Integer currPossi : possibilityTable.get(i).get(j)) {
+                    if(currPossi == killerNumber) {
+                        posToFill.add(new Coordinates(i,j));
+                    }                    
+                }
+            }
+        }
+        
+        // Sort the vector of containing the places where you can put the killer number
+        int smallestNumPossi;
+        int smallestNumPossiPos = -1;
+        ArrayList<Coordinates> posToFillSorted = new ArrayList<>();
+        while(posToFill.isEmpty() == false) {
+            smallestNumPossi = 15;
+            for(int j = 0; j < posToFill.size(); j++) {
+                int x = posToFill.get(j).x();
+                int y = posToFill.get(j).y();
+                if(smallestNumPossi > possibilityTable.get(x).get(y).size()) {
+                    smallestNumPossi = possibilityTable.get(x).get(y).size();
+                    smallestNumPossiPos = j;
+                }
+            }
+            posToFillSorted.add(posToFill.get(smallestNumPossiPos));
+            posToFill.remove(smallestNumPossiPos);
+        }
+        
+        // Goes throght the Sorted positions list to try to put the killer number on them 
+        for(Coordinates currCoord : posToFillSorted) {
+            sudokuBoard[currCoord.x()][currCoord.y()] = killerNumber;
+            // Sets the number of states to fill on the Sub Group (3x3) to be less 1
+            howManyToFill.set(currSubGroup, howManyToFill.get(currSubGroup)-1);
+            
+            // Check if it already have filled all the states on the sub group (3x3)
+            if(howManyToFill.get(currSubGroup) == 0) { // if yes                
+                
+                if(tabuSearch(sudokuBoard, subGroupOrder, currSubGroup+1, possibilityTable, 
+                        occurrenceVector, howManyToFill)) { // 
+                    
+                    return true;
+                    
+                } else { // if no
+                    
+                    sudokuBoard[currCoord.x()][currCoord.y()] = 0;
+                    howManyToFill.set(currSubGroup, howManyToFill.get(currSubGroup)+1);
+                    
+                }
+            } else {
+                
+                if(tabuSearch(sudokuBoard, subGroupOrder, currSubGroup, possibilityTable, 
+                        occurrenceVector, howManyToFill)) {
+                    
+                    return true;
+                    
+                } else {
+                    
+                    sudokuBoard[currCoord.x()][currCoord.y()] = 0;
+                    howManyToFill.set(currSubGroup, howManyToFill.get(currSubGroup)+1);
+                    
+                }
+                
+            }
+        }
+        
+        return false;
+    }
+    
+    // Supposes that the currSubGroup does not have any value on its occurrence vector
+    private void updateLocalOccurrenceVector(ArrayList<ArrayList<Integer>> occurrenceVector, 
+            int currSubGroup, ArrayList<ArrayList<ArrayList<Integer>>> possibilityTable, int startX, int startY) {
+        
+        occurrenceVector.get(currSubGroup).clear();
+        
+        // Adds nine 0's on the empty currSubGroup occurrence vector 
+        for(int i = 0; i < 9; i++) {        
+            occurrenceVector.get(currSubGroup).add(0);            
+        }
+        
+        // Calculate the occurrences
+        for(int i = startX; i < 3+startX; i++) {
+            for(int j = startY; j < 3+startY; j++) {
+                if(possibilityTable.get(i).get(j).isEmpty()) {
+                    continue;
+                }
+                for(int k = 0; k < possibilityTable.get(i).get(j).size(); k++) {  
+                    int a = possibilityTable.get(i).get(j).get(k);
+                    occurrenceVector.get(currSubGroup).set(a-1, occurrenceVector.get(currSubGroup).get(a-1)+1);                    
+                }
+            }
+        }
+        
+    }
+    
+    
+    private void updateLocalPossibilityTable(ArrayList<ArrayList<ArrayList<Integer>>> possibilityTable, 
+            int[][] sudokuBoard, int startX, int startY) {
+                        
+        for(int i = startX; i < 3+startX; i++) {
+            for(int j = startY; j < 3+startY; j++) { 
+                possibilityTable.get(i).get(j).clear(); 
+                if(sudokuBoard[i][j] != 0) {
+                    // will let the List empty
+                    continue;
+                }                               
+                for(int value = 1; value < 10; value++) {
+                    if(Valido(sudokuBoard, i, j, value)) {
+                        possibilityTable.get(i).get(j).add(value);
+                    }
+                }
+            }
+        }
+    }
+    
+    private void updateAllPossibilities(ArrayList<Integer>[][] possibilityTable, 
+            int[][] sudokuBoard) {
+        
+        for(int i = 0; i < 9; i++) {
+            for(int j = 0; j < 9; j++) {    
+                if(sudokuBoard[i][j] != 0) {
+                    continue;
+                }
+                possibilityTable[i][j].clear();                
+                for(int value = 1; value < 10; value++) {
+                    if(Valido(sudokuBoard, i, j, value)) {
+                        possibilityTable[i][j].add(value);
+                    }
+                }
+            }
+        }
+    }
+    
+    public void sortCoordArray(ArrayList<Coordinates> toSort, ArrayList<Coordinates> sorted, ArrayList<Integer>[][] possibilityTable){
+        // Sort the vector of containing the places where you can put the killer number
+        int smallestNumPossi;
+        int smallestNumPossiPos = -1;
+        while(toSort.isEmpty() == false) {
+            smallestNumPossi = -1;
+            for(int j = 0; j < toSort.size(); j++) {
+                int x = toSort.get(j).x();
+                int y = toSort.get(j).y();
+                if(smallestNumPossi > possibilityTable[x][y].size()) {
+                    smallestNumPossi = possibilityTable[x][y].size();
+                    smallestNumPossiPos = j;
+                }
+            }
+            sorted.add(toSort.get(smallestNumPossiPos));
+            toSort.remove(smallestNumPossiPos);
+        }
+    }
+
 }
