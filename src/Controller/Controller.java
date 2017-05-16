@@ -84,6 +84,7 @@ public class Controller implements ActionListener {
         } else if (ae.getActionCommand().equals("Heuristica")) {
             int[][] data = view.getData();
             
+            // Allocate both the possibilityTable and the occurrenceVector
             ArrayList<ArrayList<ArrayList<Integer>>> possibilityTable = new ArrayList<>();
             ArrayList<ArrayList<Integer>> occurrenceVector = new ArrayList<>();
             for(int i = 0; i < 9; i++) {
@@ -94,7 +95,9 @@ public class Controller implements ActionListener {
                 }
             }   
             
+            // Allocate and instantiate both the subGroupOrder and the howManyToFill
             ArrayList<Coordinates> subGroupOrder = new ArrayList<>();
+            // This Array holds the number of states to be filled on each subGroup(3x3)
             ArrayList<Integer> howManyToFill = new ArrayList<>();
             
             getSubGroupOrder(data, subGroupOrder);
@@ -104,7 +107,7 @@ public class Controller implements ActionListener {
             
             long startTime = System.nanoTime();
             
-            Boolean resultado = solucionador.tabuSearch(data, subGroupOrder, 0, possibilityTable, occurrenceVector,
+            Boolean resultado = solucionador.RareNumbersSearch(data, subGroupOrder, 0, possibilityTable, occurrenceVector,
                     howManyToFill);
             long finalTime = System.nanoTime();
             if (resultado) {
@@ -130,6 +133,7 @@ public class Controller implements ActionListener {
     
     public void getSubGroupOrder(int[][] sudokuBoard, ArrayList<Coordinates> subGroupOrder) {
         
+        // Temp array to store all the sub group's initial coordinates
         ArrayList<Coordinates> temp = new ArrayList<>();
         
         for(int i = 0; i < 9; i=i+3) {
@@ -138,6 +142,8 @@ public class Controller implements ActionListener {
             }
         }
         
+        // Sort the Sub Groups according to how many empty states they have.
+        // The one with the less empty states will be the first on the subGroupOrder vector
         int lessNumberOfStates = 15;
         int lessNumberPosition = 0;
         for(int i = 0; i < 9; i++) {
@@ -157,6 +163,7 @@ public class Controller implements ActionListener {
         
         int counter = 0;
         
+        // Goes through a local sub group and counts how many empty states it has
         for(int i = startX; i < 3+startX; i++) {
             for(int j = startY; j < 3+startY; j++) {
                 if(sudokuBoard[i][j] == 0) {

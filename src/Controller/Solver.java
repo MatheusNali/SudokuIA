@@ -144,7 +144,7 @@ public class Solver {
      * @param howManyToFill // Must be prepared from the caller of the function
      * @return
      */
-    public boolean tabuSearch(int[][] sudokuBoard, ArrayList<Coordinates> subGroupOrder, 
+    public boolean RareNumbersSearch(int[][] sudokuBoard, ArrayList<Coordinates> subGroupOrder, 
             int currSubGroup, ArrayList<ArrayList<ArrayList<Integer>>> possibilityTable, 
             ArrayList<ArrayList<Integer>> occurrenceVector, ArrayList<Integer> howManyToFill) {   
         
@@ -152,20 +152,17 @@ public class Solver {
             return true; // Finished the Sudoku
         }
         
-        if(howManyToFill.get(currSubGroup) == 0) {
-             // If all the empty states ware filled, go to the next state                        
-            return tabuSearch(sudokuBoard, subGroupOrder, currSubGroup+1, possibilityTable, 
-                    occurrenceVector, howManyToFill);
-        }
-        
+        // Update the current sub group possibilityTable
         updateLocalPossibilityTable(possibilityTable, sudokuBoard, 
             subGroupOrder.get(currSubGroup).x(), subGroupOrder.get(currSubGroup).y());
                 
+        // Update the current sub group occurrence vector 
         updateLocalOccurrenceVector(occurrenceVector, currSubGroup, possibilityTable, 
             subGroupOrder.get(currSubGroup).x(), subGroupOrder.get(currSubGroup).y());
         
         int smallestValue = 20; // To find the number that most occurr on the sub group
         int killerNumber = -1; // Stores the number that occurs more on the subGroup possibility
+        // Find the number with less repetition on the occurrence vector of the current state
         for(int i = 0; i < 9; i++) {
             if(smallestValue > occurrenceVector.get(currSubGroup).get(i)) {
                 if(occurrenceVector.get(currSubGroup).get(i) == 0) {
@@ -176,13 +173,14 @@ public class Solver {
             }
         }
         
+        // Translate vector position to the wanted number (The number 2 is in the position 1 of the vector)
         killerNumber++;
-        
-        // Make an array with the places where you can put the killer number
+                
         int currX = subGroupOrder.get(currSubGroup).x();
         int currY = subGroupOrder.get(currSubGroup).y();        
         ArrayList<Coordinates> posToFill = new ArrayList<>();
         
+        // Make an array with the places where you can put the killer number
         for(int i = currX; i < 3+currX; i++) {
             for(int j = currY; j < 3+currY; j++) {
                 for(Integer currPossi : possibilityTable.get(i).get(j)) {
@@ -220,26 +218,28 @@ public class Solver {
             // Check if it already have filled all the states on the sub group (3x3)
             if(howManyToFill.get(currSubGroup) == 0) { // if yes                
                 
-                if(tabuSearch(sudokuBoard, subGroupOrder, currSubGroup+1, possibilityTable, 
+                if(RareNumbersSearch(sudokuBoard, subGroupOrder, currSubGroup+1, possibilityTable, 
                         occurrenceVector, howManyToFill)) { // 
                     
                     return true;
                     
-                } else { // if no
+                } else {
                     
+                    // Reset the previous wrong attribution
                     sudokuBoard[currCoord.x()][currCoord.y()] = 0;
                     howManyToFill.set(currSubGroup, howManyToFill.get(currSubGroup)+1);
                     
                 }
-            } else {
+            } else { // if it had not filled all the available states on the sub group
                 
-                if(tabuSearch(sudokuBoard, subGroupOrder, currSubGroup, possibilityTable, 
+                if(RareNumbersSearch(sudokuBoard, subGroupOrder, currSubGroup, possibilityTable, 
                         occurrenceVector, howManyToFill)) {
                     
                     return true;
                     
                 } else {
                     
+                    // Reset the previous wrong attribution 
                     sudokuBoard[currCoord.x()][currCoord.y()] = 0;
                     howManyToFill.set(currSubGroup, howManyToFill.get(currSubGroup)+1);
                     
@@ -255,6 +255,7 @@ public class Solver {
     private void updateLocalOccurrenceVector(ArrayList<ArrayList<Integer>> occurrenceVector, 
             int currSubGroup, ArrayList<ArrayList<ArrayList<Integer>>> possibilityTable, int startX, int startY) {
         
+        // Clear the previous vector 
         occurrenceVector.get(currSubGroup).clear();
         
         // Adds nine 0's on the empty currSubGroup occurrence vector 
@@ -263,11 +264,14 @@ public class Solver {
         }
         
         // Calculate the occurrences
+        // Goes through the sub group matrix 
         for(int i = startX; i < 3+startX; i++) {
             for(int j = startY; j < 3+startY; j++) {
+                // If there is no possible value, do nothing
                 if(possibilityTable.get(i).get(j).isEmpty()) {
                     continue;
                 }
+                // incrment the counter of the possibilities found
                 for(int k = 0; k < possibilityTable.get(i).get(j).size(); k++) {  
                     int a = possibilityTable.get(i).get(j).get(k);
                     occurrenceVector.get(currSubGroup).set(a-1, occurrenceVector.get(currSubGroup).get(a-1)+1);                    
@@ -280,14 +284,18 @@ public class Solver {
     
     private void updateLocalPossibilityTable(ArrayList<ArrayList<ArrayList<Integer>>> possibilityTable, 
             int[][] sudokuBoard, int startX, int startY) {
-                        
+                    
+        // Goes through the Sub Group Matrix
         for(int i = startX; i < 3+startX; i++) {
             for(int j = startY; j < 3+startY; j++) { 
+                // Clear the local state previous possibilities 
                 possibilityTable.get(i).get(j).clear(); 
+                // If there are already an value, do nothing 
                 if(sudokuBoard[i][j] != 0) {
                     // will let the List empty
                     continue;
                 }                               
+                // Checks all possible values to see if they apply for that state
                 for(int value = 1; value < 10; value++) {
                     if(Valido(sudokuBoard, i, j, value)) {
                         possibilityTable.get(i).get(j).add(value);
@@ -295,43 +303,5 @@ public class Solver {
                 }
             }
         }
-    }
-    
-    private void updateAllPossibilities(ArrayList<Integer>[][] possibilityTable, 
-            int[][] sudokuBoard) {
-        
-        for(int i = 0; i < 9; i++) {
-            for(int j = 0; j < 9; j++) {    
-                if(sudokuBoard[i][j] != 0) {
-                    continue;
-                }
-                possibilityTable[i][j].clear();                
-                for(int value = 1; value < 10; value++) {
-                    if(Valido(sudokuBoard, i, j, value)) {
-                        possibilityTable[i][j].add(value);
-                    }
-                }
-            }
-        }
-    }
-    
-    public void sortCoordArray(ArrayList<Coordinates> toSort, ArrayList<Coordinates> sorted, ArrayList<Integer>[][] possibilityTable){
-        // Sort the vector of containing the places where you can put the killer number
-        int smallestNumPossi;
-        int smallestNumPossiPos = -1;
-        while(toSort.isEmpty() == false) {
-            smallestNumPossi = -1;
-            for(int j = 0; j < toSort.size(); j++) {
-                int x = toSort.get(j).x();
-                int y = toSort.get(j).y();
-                if(smallestNumPossi > possibilityTable[x][y].size()) {
-                    smallestNumPossi = possibilityTable[x][y].size();
-                    smallestNumPossiPos = j;
-                }
-            }
-            sorted.add(toSort.get(smallestNumPossiPos));
-            toSort.remove(smallestNumPossiPos);
-        }
-    }
-
+    }    
 }
